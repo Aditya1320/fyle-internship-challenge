@@ -1,5 +1,88 @@
-<div class="grid h-screen place-items-center">
-  <div class="font-bold text-3xl">
-    Fyle Internship Challenge
+<div class="container mx-auto p-4 ">
+  <title>{{ title }}</title>
+  <div class="bg-white items-center justify-between w-full flex rounded-full shadow-lg p-2 mb-5 " style="top: 5px">
+    <input class="font-bold rounded-full w-full py-4 pl-4 text-gray-700 bg-gray-100 leading-tight focus:outline-none focus:shadow-outline lg:text-sm text-xs" type="text" placeholder="Enter Username" [(ngModel)]="username">
+     <div class="bg-gray-600 p-2 hover:bg-blue-400 cursor-pointer mx-2 rounded-full" (click)="searchUser()">
+
+            <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+
+        </div>
   </div>
-</div>
+
+  <div *ngIf="loading" class="mb-8">
+    <ngx-skeleton-loader
+      animation="progress-dark"
+      [theme]="{
+        'border-radius': '4px',
+        height: '200px',
+        'max-width': '100%'
+      }"
+    ></ngx-skeleton-loader>
+  </div>
+
+  <div *ngIf="user && !loading" class="mb-8">
+    <div class="flex items-center mb-4">
+      <img class="w-40 h-40 rounded-full mr-4 outline outline-offset-2 outline-1" [src]="user.avatar_url" />
+      <div>
+        <h2 class="text-xl font-bold text-gray-700 ms-8">{{ user.name ? user.name : user.login }}</h2>
+        <p class="text-gray-600 ms-8">{{ user.bio }}</p>
+        <p class="text-Slate-950 flex items-center pt-2 " *ngIf="user.location">
+          <mat-icon fontIcon="location_on" class="text-black-1000 ms-8"></mat-icon>
+          {{ user.location }}
+        </p>
+        <a
+        class="underline decoration-transparent transition duration-300 ease-in-out hover:decoration-inherit ms-8"
+        [href]="'https://twitter.com/' + user.twitter_username"
+        target="_blank"
+        *ngIf="user.twitter_username"
+        >Twitter</a
+         >
+      </div>
+    </div>
+    <div class="mt-2 ms-14">
+      <a
+        class="underline decoration-transparent transition duration-300 ease-in-out hover:decoration-inherit "
+        [href]="user.html_url"
+        target="_blank"
+        >GitHub</a
+      >
+    </div>
+  </div>
+  <div *ngIf="loading" class="mb-8">
+    <ngx-skeleton-loader
+      animation="progress-dark"
+      [theme]="{
+        'border-radius': '4px',
+        height: '200px',
+        'max-width': '100%'
+      }"
+    ></ngx-skeleton-loader>
+  </div>
+  <div class="grid grid-cols-2 gap-x-16 gap-y-8 mb-8 ">
+    <div
+      class="bg-white rounded-lg p-4 shadow-md border-2 border-black"
+      *ngFor="let repo of dataObs$ | async"
+    >
+      <h3 class="text-lg font-bold text-blue-500 mb-2">{{ repo.name }}</h3>
+      <p class="text-gray-600 mb-2 mt-2">{{ repo.description || 'No description' }}</p>
+      <div class="flex flex-wrap gap-2">
+      <span
+        class="inline-block bg-blue-400 rounded px-2 py-1 text-sm font-semibold text-gray-50 "
+        *ngFor="let language of repo.languages"
+        >{{ language }}</span
+      >
+    </div>
+    </div>
+  </div>
+  <div class="container mx-auto p-1 flex items-center justify-center mb-8">
+    <mat-paginator
+    [length]="repositories.length"
+    [pageSizeOptions]="[10, 20, 50, 100]"
+    aria-label="Select page"
+    class="paginator fixed bottom-0 "
+    >
+    </mat-paginator>
+    </div>
+</div> 
